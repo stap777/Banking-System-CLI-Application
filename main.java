@@ -23,6 +23,7 @@ class Bank {
 
     ArrayList<account> ac = new ArrayList<>();
     account currentAccount;
+    account receiverAccount;
 
     void createAccount(Scanner sc) {
 
@@ -86,11 +87,75 @@ class Bank {
     }
 
     void balanceCheck() {
-        
+        System.out.println(currentAccount.balance);
     }
 
+    void depositMoney(Scanner sc) {
 
+        System.out.println("input amount to be deposited");
+
+        int amount = sc.nextInt();
+        sc.nextLine();
+        if (amount > 100000 && amount < 0) {
+            System.out.println("limit excided");
+        }
+        else {
+            currentAccount.balance += amount;
+            System.out.println("Success");
+        }
+    }
+
+    void withdrawMoney(Scanner sc) {
+        System.out.println("input amount to be withdrawed");
+
+        int amount = sc.nextInt();
+        sc.nextLine();
+        if (amount > currentAccount.balance && amount < 0) {
+            System.out.println("insufficiant balance");
+        }
+        else {
+            currentAccount.balance -= amount;
+            System.out.println("Success");
+        }
+    }
+
+    void transferMoney(Scanner sc) {
+        System.out.println("input recipients account no");
+        int accNo = sc.nextInt();
+        sc.nextLine();
+
+        System.out.println("input amount to be transfered");
+        int amount = sc.nextInt();
+        sc.nextLine();
+        boolean found = false;
+
+        for (int i = 0; i < ac.size(); i++) {
+            if (accNo == ac.get(i).accountNo) {
+                receiverAccount = ac.get(i);
+                found = true;
+                
+                if (amount > currentAccount.balance && amount < 0) {
+                    System.out.println("insufficiant funds");
+                }
+                else {
+                    receiverAccount.balance += amount;
+                    currentAccount.balance -= amount;
+                    System.out.println("Success");
+                }
+                break;
+            }
+            
+        }
+        if (!found) {
+            System.out.println("Invalid Account No");
+        }
+    }
+
+    void LogOut() {
+        currentAccount = null;
+    }
 }
+
 public class main {
 
     static void printlist(ArrayList<String> menu) {
@@ -112,6 +177,7 @@ public class main {
         AccountMenu.add("(2) Diposite Money");
         AccountMenu.add("(3) Withdraw money");
         AccountMenu.add("(4) Transfer Money");
+        AccountMenu.add("(5) LogOut");
 
         menu.add("(1) Create Account");
         menu.add("(2) List all Accounts");
@@ -136,14 +202,42 @@ public class main {
                 else if (choice == 3) {
                     BU.login(sc);
                 }
+
+                else if (choice == 4) {
+                    break;
+                }
+                
+                else {
+                    System.out.println("Invalid Choice");
+                }
             }
             else {
                 printlist(AccountMenu);
-                int choice= sc.nextInt();
+                int choice = sc.nextInt();
                 sc.nextLine();
 
                 if (choice == 1) {
                     BU.balanceCheck();
+                }
+
+                else if (choice == 2) {
+                    BU.depositMoney(sc);
+                }
+
+                else if (choice == 3) {
+                    BU.withdrawMoney(sc);
+                }
+
+                else if (choice == 4) {
+                    BU.transferMoney(sc);
+                }
+
+                else if (choice == 5) {
+                    BU.LogOut();
+                }
+
+                else {
+                    System.out.println("Invalid Choice");
                 }
             }
 
